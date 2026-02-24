@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bilimsel Hesap Makinesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,199 +17,326 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #0a0a0f 0%, #13131f 50%, #0d1117 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
         }
 
         .calculator {
-            background: #1e1e2f;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            width: 400px;
+            background: linear-gradient(165deg, rgba(30, 30, 45, 0.9) 0%, rgba(20, 20, 35, 0.95) 100%);
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            width: 420px;
+            backdrop-filter: blur(20px);
         }
 
-        .display {
-            background: #12121c;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            min-height: 120px;
+        .header {
             display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 4px;
         }
 
-        .expression {
-            color: #8b8b9e;
-            font-size: 18px;
-            min-height: 28px;
-            word-wrap: break-word;
-            text-align: right;
-            font-family: 'Consolas', monospace;
-        }
-
-        .result {
-            color: #ffffff;
-            font-size: 42px;
-            font-weight: 300;
-            word-wrap: break-word;
-            text-align: right;
-            font-family: 'Consolas', monospace;
-        }
-
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-        }
-
-        button {
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            padding: 16px 8px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-weight: 500;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .number {
-            background: #2d2d44;
-            color: #ffffff;
-        }
-
-        .number:hover {
-            background: #3d3d5c;
-        }
-
-        .operator {
-            background: #4a4a6a;
-            color: #ffffff;
-        }
-
-        .operator:hover {
-            background: #5a5a7a;
-        }
-
-        .function {
-            background: #3a3a5a;
-            color: #a8a8c8;
+        .logo {
             font-size: 14px;
-        }
-
-        .function:hover {
-            background: #4a4a6a;
-            color: #ffffff;
-        }
-
-        .constant {
-            background: #2a4a5a;
-            color: #7ac7c4;
-        }
-
-        .constant:hover {
-            background: #3a5a6a;
-        }
-
-        .equals {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            grid-column: span 2;
-            font-size: 24px;
-        }
-
-        .equals:hover {
-            background: linear-gradient(135deg, #7a8eea 0%, #8a5bb2 100%);
-        }
-
-        .clear {
-            background: #c0392b;
-            color: white;
-        }
-
-        .clear:hover {
-            background: #e74c3c;
-        }
-
-        .delete {
-            background: #d35400;
-            color: white;
-        }
-
-        .delete:hover {
-            background: #e67e22;
-        }
-
-        .parenthesis {
-            background: #8e44ad;
-            color: white;
-        }
-
-        .parenthesis:hover {
-            background: #9b59b6;
-        }
-
-        .small-text {
-            font-size: 12px;
+            font-weight: 600;
+            color: #6366f1;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .mode-switch {
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            border-radius: 12px;
         }
 
         .mode-btn {
-            flex: 1;
-            padding: 10px;
-            background: #2d2d44;
+            padding: 8px 16px;
+            background: transparent;
             border: none;
             border-radius: 8px;
-            color: #8b8b9e;
+            color: #64748b;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: inherit;
         }
 
         .mode-btn.active {
-            background: #667eea;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
 
-        .mode-btn:hover {
-            background: #3d3d5c;
+        .mode-btn:hover:not(.active) {
+            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .mode-btn.active:hover {
-            background: #7a8eea;
+        .display {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+        }
+
+        .expression {
+            color: #64748b;
+            font-size: 16px;
+            min-height: 24px;
+            word-wrap: break-word;
+            text-align: right;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            margin-bottom: 8px;
+            transition: color 0.2s;
+        }
+
+        .result {
+            color: #f8fafc;
+            font-size: 48px;
+            font-weight: 300;
+            word-wrap: break-word;
+            text-align: right;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            letter-spacing: -1px;
+            text-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
         }
 
         .scientific-panel {
             display: none;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .scientific-panel.show {
             display: grid;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            padding: 18px 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        button:hover::before {
+            opacity: 1;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .number {
+            background: linear-gradient(165deg, #2d2d44 0%, #252538 100%);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .number:hover {
+            background: linear-gradient(165deg, #3d3d5c 0%, #353548 100%);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .operator {
+            background: linear-gradient(165deg, #3b3b5c 0%, #2f2f48 100%);
+            color: #a5b4fc;
+            border: 1px solid rgba(165, 180, 252, 0.1);
+        }
+
+        .operator:hover {
+            background: linear-gradient(165deg, #4b4b6c 0%, #3f3f58 100%);
+            color: #c7d2fe;
+        }
+
+        .function {
+            background: linear-gradient(165deg, #1e293b 0%, #1a2332 100%);
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .function:hover {
+            background: linear-gradient(165deg, #2e3a4b 0%, #2a3342 100%);
+            color: #cbd5e1;
+        }
+
+        .constant {
+            background: linear-gradient(165deg, #164e63 0%, #0e3a47 100%);
+            color: #67e8f9;
+            font-size: 14px;
+            border: 1px solid rgba(103, 232, 249, 0.1);
+        }
+
+        .constant:hover {
+            background: linear-gradient(165deg, #1e5f74 0%, #164a57 100%);
+            box-shadow: 0 4px 20px rgba(103, 232, 249, 0.15);
+        }
+
+        .equals {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            grid-column: span 2;
+            font-size: 26px;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .equals:hover {
+            background: linear-gradient(135deg, #7577f5 0%, #9d6ffa 100%);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .clear {
+            background: linear-gradient(165deg, #7f1d1d 0%, #5c1515 100%);
+            color: #fca5a5;
+            border: 1px solid rgba(252, 165, 165, 0.1);
+        }
+
+        .clear:hover {
+            background: linear-gradient(165deg, #991b1b 0%, #6c1b1b 100%);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .delete {
+            background: linear-gradient(165deg, #78350f 0%, #5c2a0a 100%);
+            color: #fcd34d;
+            border: 1px solid rgba(252, 211, 77, 0.1);
+        }
+
+        .delete:hover {
+            background: linear-gradient(165deg, #8a3f12 0%, #6c3410 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .parenthesis {
+            background: linear-gradient(165deg, #4c1d95 0%, #3b1578 100%);
+            color: #c4b5fd;
+            border: 1px solid rgba(196, 181, 253, 0.1);
+        }
+
+        .parenthesis:hover {
+            background: linear-gradient(165deg, #5b21b6 0%, #4a1d8f 100%);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .credit {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #475569;
+            letter-spacing: 1px;
+        }
+
+        .credit a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+
+        @media (max-width: 450px) {
+            .calculator {
+                width: 100%;
+                padding: 20px;
+                border-radius: 24px;
+            }
+
+            button {
+                padding: 14px 8px;
+                font-size: 16px;
+            }
+
+            .result {
+                font-size: 36px;
+            }
+
+            .buttons, .scientific-panel {
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <div class="mode-switch">
-            <button class="mode-btn active" onclick="setMode('basic')">Temel</button>
-            <button class="mode-btn" onclick="setMode('scientific')">Bilimsel</button>
+        <div class="header">
+            <div class="logo">CalPol</div>
+            <div class="mode-switch">
+                <button class="mode-btn active" onclick="setMode('basic')">Temel</button>
+                <button class="mode-btn" onclick="setMode('scientific')">Bilimsel</button>
+            </div>
         </div>
 
         <div class="display">
@@ -271,6 +399,10 @@
             <button class="number" onclick="append('.')">.</button>
             <button class="number" onclick="append('00')">00</button>
             <button class="equals" onclick="calculate()">=</button>
+        </div>
+
+        <div class="credit">
+            Made with Claude Code
         </div>
     </div>
 
@@ -366,8 +498,8 @@
                 }
             }
 
-            const constants = ['PI', 'PHI', 'SQRT2', 'SQRT3'];
-            for (let c of constants) {
+            const constNames = ['PI', 'PHI', 'SQRT2', 'SQRT3'];
+            for (let c of constNames) {
                 if (expression.endsWith(c)) {
                     expression = expression.slice(0, -c.length);
                     updateDisplay();
@@ -388,19 +520,14 @@
         }
 
         function evaluate(expr) {
-            // Replace constants
             for (let [name, value] of Object.entries(constants)) {
                 expr = expr.replace(new RegExp(name, 'g'), `(${value})`);
             }
 
-            // Replace ^ with **
             expr = expr.replace(/\^/g, '**');
-
-            // Handle factorial
             expr = expr.replace(/(\d+)!/g, 'factorial($1)');
             expr = expr.replace(/fact\(([^)]+)\)/g, 'factorial($1)');
 
-            // Replace functions
             expr = expr.replace(/sin\(/g, 'Math.sin(');
             expr = expr.replace(/cos\(/g, 'Math.cos(');
             expr = expr.replace(/tan\(/g, 'Math.tan(');
@@ -414,7 +541,6 @@
             expr = expr.replace(/abs\(/g, 'Math.abs(');
             expr = expr.replace(/pow\(/g, 'Math.pow(');
 
-            // Validate - only allow safe characters
             if (!/^[\d\s+\-*/%().,Mathsincotaqglbpwrfaeil]+$/.test(expr)) {
                 throw new Error('Geçersiz karakter');
             }
@@ -434,18 +560,17 @@
                     resultDisplay.textContent = result > 0 ? '∞' : '-∞';
                 } else {
                     const formatted = Number.isInteger(result) ?
-                        result.toString() :
-                        parseFloat(result.toPrecision(12)).toString();
+                        result.toLocaleString('tr-TR') :
+                        parseFloat(result.toPrecision(12)).toLocaleString('tr-TR', {maximumFractionDigits: 10});
                     resultDisplay.textContent = formatted;
                     lastResult = result;
-                    expression = formatted;
+                    expression = result.toString();
                 }
             } catch (e) {
                 resultDisplay.textContent = 'Hata';
             }
         }
 
-        // Keyboard support
         document.addEventListener('keydown', (e) => {
             if (e.key >= '0' && e.key <= '9') append(e.key);
             else if (e.key === '.') append('.');
@@ -457,7 +582,7 @@
             else if (e.key === '^') append('^');
             else if (e.key === '(') append('(');
             else if (e.key === ')') append(')');
-            else if (e.key === '!' ) append('!');
+            else if (e.key === '!') append('!');
             else if (e.key === 'Enter' || e.key === '=') calculate();
             else if (e.key === 'Escape') clearAll();
             else if (e.key === 'Backspace') deleteLast();
