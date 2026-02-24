@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hesap Makinesi</title>
+    <title>Bilimsel Hesap Makinesi</title>
     <style>
         * {
             margin: 0;
@@ -16,266 +16,453 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .calculator {
-            background: #22223b;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            width: 320px;
+            background: #1e1e2f;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            width: 400px;
         }
 
         .display {
-            background: #1a1a2e;
-            border-radius: 10px;
+            background: #12121c;
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-            text-align: right;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
         }
 
-        .previous {
-            color: #9a8c98;
-            font-size: 16px;
-            min-height: 24px;
+        .expression {
+            color: #8b8b9e;
+            font-size: 18px;
+            min-height: 28px;
             word-wrap: break-word;
+            text-align: right;
+            font-family: 'Consolas', monospace;
         }
 
-        .current {
-            color: #f2e9e4;
-            font-size: 36px;
+        .result {
+            color: #ffffff;
+            font-size: 42px;
             font-weight: 300;
             word-wrap: break-word;
-            min-height: 44px;
+            text-align: right;
+            font-family: 'Consolas', monospace;
         }
 
         .buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
         }
 
         button {
             border: none;
-            border-radius: 10px;
-            font-size: 24px;
-            padding: 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            padding: 16px 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
+            font-weight: 500;
         }
 
         button:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: translateY(0);
         }
 
         .number {
-            background: #4a4e69;
-            color: #f2e9e4;
+            background: #2d2d44;
+            color: #ffffff;
         }
 
         .number:hover {
-            background: #5a5f7a;
+            background: #3d3d5c;
         }
 
         .operator {
-            background: #9a8c98;
-            color: #1a1a2e;
+            background: #4a4a6a;
+            color: #ffffff;
         }
 
         .operator:hover {
-            background: #b0a3a8;
+            background: #5a5a7a;
+        }
+
+        .function {
+            background: #3a3a5a;
+            color: #a8a8c8;
+            font-size: 14px;
+        }
+
+        .function:hover {
+            background: #4a4a6a;
+            color: #ffffff;
+        }
+
+        .constant {
+            background: #2a4a5a;
+            color: #7ac7c4;
+        }
+
+        .constant:hover {
+            background: #3a5a6a;
         }
 
         .equals {
-            background: #c9ada7;
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             grid-column: span 2;
+            font-size: 24px;
         }
 
         .equals:hover {
-            background: #d4b8b2;
+            background: linear-gradient(135deg, #7a8eea 0%, #8a5bb2 100%);
         }
 
         .clear {
-            background: #e63946;
+            background: #c0392b;
             color: white;
         }
 
         .clear:hover {
-            background: #f04a58;
+            background: #e74c3c;
         }
 
         .delete {
-            background: #f4a261;
-            color: #1a1a2e;
+            background: #d35400;
+            color: white;
         }
 
         .delete:hover {
-            background: #f5b070;
+            background: #e67e22;
+        }
+
+        .parenthesis {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .parenthesis:hover {
+            background: #9b59b6;
+        }
+
+        .small-text {
+            font-size: 12px;
+        }
+
+        .mode-switch {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            background: #2d2d44;
+            border: none;
+            border-radius: 8px;
+            color: #8b8b9e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-btn:hover {
+            background: #3d3d5c;
+        }
+
+        .mode-btn.active:hover {
+            background: #7a8eea;
+        }
+
+        .scientific-panel {
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .scientific-panel.show {
+            display: grid;
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <div class="display">
-            <div class="previous" id="previous"></div>
-            <div class="current" id="current">0</div>
+        <div class="mode-switch">
+            <button class="mode-btn active" onclick="setMode('basic')">Temel</button>
+            <button class="mode-btn" onclick="setMode('scientific')">Bilimsel</button>
         </div>
+
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+        </div>
+
+        <div class="scientific-panel" id="scientificPanel">
+            <button class="function" onclick="appendFunction('sin(')">sin</button>
+            <button class="function" onclick="appendFunction('cos(')">cos</button>
+            <button class="function" onclick="appendFunction('tan(')">tan</button>
+            <button class="function" onclick="appendFunction('asin(')">sin⁻¹</button>
+            <button class="function" onclick="appendFunction('acos(')">cos⁻¹</button>
+
+            <button class="function" onclick="appendFunction('log(')">log</button>
+            <button class="function" onclick="appendFunction('ln(')">ln</button>
+            <button class="function" onclick="appendFunction('sqrt(')">√</button>
+            <button class="function" onclick="appendFunction('cbrt(')">³√</button>
+            <button class="function" onclick="appendFunction('abs(')">|x|</button>
+
+            <button class="function" onclick="appendFunction('pow(')">xʸ</button>
+            <button class="function" onclick="append('**2')">x²</button>
+            <button class="function" onclick="append('**3')">x³</button>
+            <button class="function" onclick="appendFunction('fact(')">n!</button>
+            <button class="function" onclick="append('**-1')">x⁻¹</button>
+
+            <button class="constant" onclick="append('PI')">π</button>
+            <button class="constant" onclick="append('E')">e</button>
+            <button class="constant" onclick="append('PHI')">φ</button>
+            <button class="constant" onclick="append('SQRT2')">√2</button>
+            <button class="constant" onclick="append('SQRT3')">√3</button>
+        </div>
+
         <div class="buttons">
             <button class="clear" onclick="clearAll()">C</button>
-            <button class="delete" onclick="deleteLast()">DEL</button>
-            <button class="operator" onclick="appendOperator('%')">%</button>
-            <button class="operator" onclick="appendOperator('/')">÷</button>
+            <button class="delete" onclick="deleteLast()">⌫</button>
+            <button class="parenthesis" onclick="append('(')">(</button>
+            <button class="parenthesis" onclick="append(')')">)</button>
+            <button class="operator" onclick="append('/')">÷</button>
 
-            <button class="number" onclick="appendNumber('7')">7</button>
-            <button class="number" onclick="appendNumber('8')">8</button>
-            <button class="number" onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="appendOperator('*')">×</button>
+            <button class="number" onclick="append('7')">7</button>
+            <button class="number" onclick="append('8')">8</button>
+            <button class="number" onclick="append('9')">9</button>
+            <button class="operator" onclick="append('%')">%</button>
+            <button class="operator" onclick="append('*')">×</button>
 
-            <button class="number" onclick="appendNumber('4')">4</button>
-            <button class="number" onclick="appendNumber('5')">5</button>
-            <button class="number" onclick="appendNumber('6')">6</button>
-            <button class="operator" onclick="appendOperator('-')">−</button>
+            <button class="number" onclick="append('4')">4</button>
+            <button class="number" onclick="append('5')">5</button>
+            <button class="number" onclick="append('6')">6</button>
+            <button class="operator" onclick="append('!')">!</button>
+            <button class="operator" onclick="append('-')">−</button>
 
-            <button class="number" onclick="appendNumber('1')">1</button>
-            <button class="number" onclick="appendNumber('2')">2</button>
-            <button class="number" onclick="appendNumber('3')">3</button>
-            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button class="number" onclick="append('1')">1</button>
+            <button class="number" onclick="append('2')">2</button>
+            <button class="number" onclick="append('3')">3</button>
+            <button class="operator" onclick="append('^')">^</button>
+            <button class="operator" onclick="append('+')">+</button>
 
-            <button class="number" onclick="appendNumber('0')">0</button>
-            <button class="number" onclick="appendNumber('.')">.</button>
+            <button class="number" onclick="append('0')">0</button>
+            <button class="number" onclick="append('.')">.</button>
+            <button class="number" onclick="append('00')">00</button>
             <button class="equals" onclick="calculate()">=</button>
         </div>
     </div>
 
     <script>
-        let currentValue = '0';
-        let previousValue = '';
-        let operator = null;
-        let shouldResetCurrent = false;
+        let expression = '';
+        let lastResult = null;
 
-        const currentDisplay = document.getElementById('current');
-        const previousDisplay = document.getElementById('previous');
+        const expressionDisplay = document.getElementById('expression');
+        const resultDisplay = document.getElementById('result');
+
+        const constants = {
+            'PI': Math.PI,
+            'E': Math.E,
+            'PHI': (1 + Math.sqrt(5)) / 2,
+            'SQRT2': Math.sqrt(2),
+            'SQRT3': Math.sqrt(3)
+        };
+
+        function factorial(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            if (n > 170) return Infinity;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        function setMode(mode) {
+            const btns = document.querySelectorAll('.mode-btn');
+            const panel = document.getElementById('scientificPanel');
+
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            if (mode === 'scientific') {
+                btns[1].classList.add('active');
+                panel.classList.add('show');
+            } else {
+                btns[0].classList.add('active');
+                panel.classList.remove('show');
+            }
+        }
 
         function updateDisplay() {
-            currentDisplay.textContent = currentValue;
-            if (operator && previousValue) {
-                const opSymbol = getOperatorSymbol(operator);
-                previousDisplay.textContent = `${previousValue} ${opSymbol}`;
-            } else {
-                previousDisplay.textContent = previousValue;
-            }
+            let displayExpr = expression
+                .replace(/\*/g, '×')
+                .replace(/\//g, '÷')
+                .replace(/-/g, '−')
+                .replace(/PI/g, 'π')
+                .replace(/PHI/g, 'φ')
+                .replace(/SQRT2/g, '√2')
+                .replace(/SQRT3/g, '√3')
+                .replace(/sqrt\(/g, '√(')
+                .replace(/cbrt\(/g, '³√(')
+                .replace(/\*\*2/g, '²')
+                .replace(/\*\*3/g, '³')
+                .replace(/\*\*-1/g, '⁻¹')
+                .replace(/\^/g, '^');
+
+            expressionDisplay.textContent = displayExpr || ' ';
         }
 
-        function getOperatorSymbol(op) {
-            switch(op) {
-                case '+': return '+';
-                case '-': return '−';
-                case '*': return '×';
-                case '/': return '÷';
-                case '%': return '%';
-                default: return op;
-            }
-        }
-
-        function appendNumber(num) {
-            if (shouldResetCurrent) {
-                currentValue = num;
-                shouldResetCurrent = false;
-            } else if (currentValue === '0' && num !== '.') {
-                currentValue = num;
-            } else if (num === '.' && currentValue.includes('.')) {
-                return;
+        function append(value) {
+            if (lastResult !== null && !isNaN(parseFloat(value)) && expression === lastResult.toString()) {
+                expression = value;
             } else {
-                currentValue += num;
+                expression += value;
             }
+            lastResult = null;
             updateDisplay();
         }
 
-        function appendOperator(op) {
-            if (operator && !shouldResetCurrent) {
-                calculate();
-            }
-            previousValue = currentValue;
-            operator = op;
-            shouldResetCurrent = true;
-            updateDisplay();
-        }
-
-        function calculate() {
-            if (!operator || shouldResetCurrent) return;
-
-            const prev = parseFloat(previousValue);
-            const current = parseFloat(currentValue);
-            let result;
-
-            switch(operator) {
-                case '+':
-                    result = prev + current;
-                    break;
-                case '-':
-                    result = prev - current;
-                    break;
-                case '*':
-                    result = prev * current;
-                    break;
-                case '/':
-                    if (current === 0) {
-                        result = 'Hata';
-                    } else {
-                        result = prev / current;
-                    }
-                    break;
-                case '%':
-                    result = prev % current;
-                    break;
-            }
-
-            if (result !== 'Hata') {
-                result = Math.round(result * 1000000000) / 1000000000;
-            }
-
-            currentValue = result.toString();
-            previousValue = '';
-            operator = null;
-            shouldResetCurrent = true;
+        function appendFunction(func) {
+            expression += func;
+            lastResult = null;
             updateDisplay();
         }
 
         function clearAll() {
-            currentValue = '0';
-            previousValue = '';
-            operator = null;
-            shouldResetCurrent = false;
+            expression = '';
+            lastResult = null;
+            resultDisplay.textContent = '0';
             updateDisplay();
         }
 
         function deleteLast() {
-            if (currentValue.length === 1 || currentValue === 'Hata') {
-                currentValue = '0';
+            const funcs = ['sin(', 'cos(', 'tan(', 'asin(', 'acos(', 'atan(', 'log(', 'ln(', 'sqrt(', 'cbrt(', 'abs(', 'pow(', 'fact('];
+
+            for (let func of funcs) {
+                if (expression.endsWith(func)) {
+                    expression = expression.slice(0, -func.length);
+                    updateDisplay();
+                    return;
+                }
+            }
+
+            const constants = ['PI', 'PHI', 'SQRT2', 'SQRT3'];
+            for (let c of constants) {
+                if (expression.endsWith(c)) {
+                    expression = expression.slice(0, -c.length);
+                    updateDisplay();
+                    return;
+                }
+            }
+
+            if (expression.endsWith('**2') || expression.endsWith('**3')) {
+                expression = expression.slice(0, -3);
+            } else if (expression.endsWith('**-1')) {
+                expression = expression.slice(0, -4);
+            } else if (expression.endsWith('00')) {
+                expression = expression.slice(0, -2);
             } else {
-                currentValue = currentValue.slice(0, -1);
+                expression = expression.slice(0, -1);
             }
             updateDisplay();
         }
 
+        function evaluate(expr) {
+            // Replace constants
+            for (let [name, value] of Object.entries(constants)) {
+                expr = expr.replace(new RegExp(name, 'g'), `(${value})`);
+            }
+
+            // Replace ^ with **
+            expr = expr.replace(/\^/g, '**');
+
+            // Handle factorial
+            expr = expr.replace(/(\d+)!/g, 'factorial($1)');
+            expr = expr.replace(/fact\(([^)]+)\)/g, 'factorial($1)');
+
+            // Replace functions
+            expr = expr.replace(/sin\(/g, 'Math.sin(');
+            expr = expr.replace(/cos\(/g, 'Math.cos(');
+            expr = expr.replace(/tan\(/g, 'Math.tan(');
+            expr = expr.replace(/asin\(/g, 'Math.asin(');
+            expr = expr.replace(/acos\(/g, 'Math.acos(');
+            expr = expr.replace(/atan\(/g, 'Math.atan(');
+            expr = expr.replace(/log\(/g, 'Math.log10(');
+            expr = expr.replace(/ln\(/g, 'Math.log(');
+            expr = expr.replace(/sqrt\(/g, 'Math.sqrt(');
+            expr = expr.replace(/cbrt\(/g, 'Math.cbrt(');
+            expr = expr.replace(/abs\(/g, 'Math.abs(');
+            expr = expr.replace(/pow\(/g, 'Math.pow(');
+
+            // Validate - only allow safe characters
+            if (!/^[\d\s+\-*/%().,Mathsincotaqglbpwrfaeil]+$/.test(expr)) {
+                throw new Error('Geçersiz karakter');
+            }
+
+            return Function('factorial', `"use strict"; return (${expr})`)(factorial);
+        }
+
+        function calculate() {
+            if (!expression) return;
+
+            try {
+                const result = evaluate(expression);
+
+                if (isNaN(result)) {
+                    resultDisplay.textContent = 'Hata';
+                } else if (!isFinite(result)) {
+                    resultDisplay.textContent = result > 0 ? '∞' : '-∞';
+                } else {
+                    const formatted = Number.isInteger(result) ?
+                        result.toString() :
+                        parseFloat(result.toPrecision(12)).toString();
+                    resultDisplay.textContent = formatted;
+                    lastResult = result;
+                    expression = formatted;
+                }
+            } catch (e) {
+                resultDisplay.textContent = 'Hata';
+            }
+        }
+
+        // Keyboard support
         document.addEventListener('keydown', (e) => {
-            if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
-            else if (e.key === '.') appendNumber('.');
-            else if (e.key === '+') appendOperator('+');
-            else if (e.key === '-') appendOperator('-');
-            else if (e.key === '*') appendOperator('*');
-            else if (e.key === '/') appendOperator('/');
-            else if (e.key === '%') appendOperator('%');
+            if (e.key >= '0' && e.key <= '9') append(e.key);
+            else if (e.key === '.') append('.');
+            else if (e.key === '+') append('+');
+            else if (e.key === '-') append('-');
+            else if (e.key === '*') append('*');
+            else if (e.key === '/') append('/');
+            else if (e.key === '%') append('%');
+            else if (e.key === '^') append('^');
+            else if (e.key === '(') append('(');
+            else if (e.key === ')') append(')');
+            else if (e.key === '!' ) append('!');
             else if (e.key === 'Enter' || e.key === '=') calculate();
             else if (e.key === 'Escape') clearAll();
             else if (e.key === 'Backspace') deleteLast();
+            else if (e.key === 'p') append('PI');
+            else if (e.key === 'e') append('E');
         });
 
         updateDisplay();
