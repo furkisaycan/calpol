@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesap Makinesi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .calculator {
+            background: #22223b;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            width: 320px;
+        }
+
+        .display {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .previous {
+            color: #9a8c98;
+            font-size: 16px;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+
+        .current {
+            color: #f2e9e4;
+            font-size: 36px;
+            font-weight: 300;
+            word-wrap: break-word;
+            min-height: 44px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            font-size: 24px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .number {
+            background: #4a4e69;
+            color: #f2e9e4;
+        }
+
+        .number:hover {
+            background: #5a5f7a;
+        }
+
+        .operator {
+            background: #9a8c98;
+            color: #1a1a2e;
+        }
+
+        .operator:hover {
+            background: #b0a3a8;
+        }
+
+        .equals {
+            background: #c9ada7;
+            color: #1a1a2e;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: #d4b8b2;
+        }
+
+        .clear {
+            background: #e63946;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #f04a58;
+        }
+
+        .delete {
+            background: #f4a261;
+            color: #1a1a2e;
+        }
+
+        .delete:hover {
+            background: #f5b070;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="previous" id="previous"></div>
+            <div class="current" id="current">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear" onclick="clearAll()">C</button>
+            <button class="delete" onclick="deleteLast()">DEL</button>
+            <button class="operator" onclick="appendOperator('%')">%</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">−</button>
+
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+
+            <button class="number" onclick="appendNumber('0')">0</button>
+            <button class="number" onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentValue = '0';
+        let previousValue = '';
+        let operator = null;
+        let shouldResetCurrent = false;
+
+        const currentDisplay = document.getElementById('current');
+        const previousDisplay = document.getElementById('previous');
+
+        function updateDisplay() {
+            currentDisplay.textContent = currentValue;
+            if (operator && previousValue) {
+                const opSymbol = getOperatorSymbol(operator);
+                previousDisplay.textContent = `${previousValue} ${opSymbol}`;
+            } else {
+                previousDisplay.textContent = previousValue;
+            }
+        }
+
+        function getOperatorSymbol(op) {
+            switch(op) {
+                case '+': return '+';
+                case '-': return '−';
+                case '*': return '×';
+                case '/': return '÷';
+                case '%': return '%';
+                default: return op;
+            }
+        }
+
+        function appendNumber(num) {
+            if (shouldResetCurrent) {
+                currentValue = num;
+                shouldResetCurrent = false;
+            } else if (currentValue === '0' && num !== '.') {
+                currentValue = num;
+            } else if (num === '.' && currentValue.includes('.')) {
+                return;
+            } else {
+                currentValue += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator && !shouldResetCurrent) {
+                calculate();
+            }
+            previousValue = currentValue;
+            operator = op;
+            shouldResetCurrent = true;
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (!operator || shouldResetCurrent) return;
+
+            const prev = parseFloat(previousValue);
+            const current = parseFloat(currentValue);
+            let result;
+
+            switch(operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    if (current === 0) {
+                        result = 'Hata';
+                    } else {
+                        result = prev / current;
+                    }
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+            }
+
+            if (result !== 'Hata') {
+                result = Math.round(result * 1000000000) / 1000000000;
+            }
+
+            currentValue = result.toString();
+            previousValue = '';
+            operator = null;
+            shouldResetCurrent = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentValue = '0';
+            previousValue = '';
+            operator = null;
+            shouldResetCurrent = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentValue.length === 1 || currentValue === 'Hata') {
+                currentValue = '0';
+            } else {
+                currentValue = currentValue.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
+            else if (e.key === '.') appendNumber('.');
+            else if (e.key === '+') appendOperator('+');
+            else if (e.key === '-') appendOperator('-');
+            else if (e.key === '*') appendOperator('*');
+            else if (e.key === '/') appendOperator('/');
+            else if (e.key === '%') appendOperator('%');
+            else if (e.key === 'Enter' || e.key === '=') calculate();
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') deleteLast();
+        });
+
+        updateDisplay();
+    </script>
+</body>
+</html>
